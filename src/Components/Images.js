@@ -17,9 +17,10 @@ import { useQuery, useQueryClient } from 'react-query';
 const Images = () => {
     const [fileObjects, setFileObjects] = useState([])
     const [uploadSuccess, setUploadSuccess] = useState(false)
-    const [page, setPage] = useState({ current: 1, totalItems: 0, pageSize: 19 })
+    const [page, setPage] = useState({ current: 1, totalItems: 0, pageSize: 25 })
     const [currentPage, setCurrentPage] = useState(1)
     const [show, setShow] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const queryClient = useQueryClient(); // Access queryClient
 
@@ -44,6 +45,7 @@ const Images = () => {
     const uploadImages = async (e) => {
         try {
             e.preventDefault()
+            setLoading(true)
             if (fileObjects) {
                 let formdata = new FormData();
                 for (let file of fileObjects) {
@@ -60,8 +62,10 @@ const Images = () => {
                 queryClient.invalidateQueries('images'); // Invalidate the query to refetch data from the server when images are uploaded successfully
                 setShow(false)
                 setUploadSuccess(true)
+                setLoading(false)
             }
         } catch (error) {
+            setLoading(false)
             console.error("Error uploading images:", error)
             toast.error(error.response.data.message)
         }
@@ -72,7 +76,9 @@ const Images = () => {
     //     queryClient.setQueryData(['images', currentPage], images);
     // }
 
-    return (
+    return loading ? (<>
+        <Loader />
+    </>) : (
         <div className="gallery-container">
             <UploadImage onSubmit={uploadImages} handleOnChange={handleOnChange} show={show} setShow={setShow} />
             <header className="header">Header Content</header>
@@ -103,7 +109,7 @@ const Images = () => {
                                         />
                                     </label>
                                 </div>
-                                {isLoading ? (
+                                {(isLoading) ? (
                                     <Loader />
                                 ) : isError ? (
                                     <div>Error fetching images</div>
