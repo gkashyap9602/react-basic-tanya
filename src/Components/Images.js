@@ -27,7 +27,7 @@ const Images = () => {
 
     const { data: images, isLoading, isError } = useQuery(['images', currentPage], () =>
     axios.get(`${GET_UPLOAD_IMAGES}?pageSize=${page.pageSize}&page=${currentPage}`, {
-        withCredentials: true // Add withCredentials: true here
+        // withCredentials: true // Add withCredentials: true here
     })
     .then(response => response?.data?.data?.result),
     {
