@@ -26,17 +26,19 @@ const Images = () => {
 
 
     const { data: images, isLoading, isError } = useQuery(['images', currentPage], () =>
-        axios.get(`${GET_UPLOAD_IMAGES}?pageSize=${page.pageSize}&page=${currentPage}`)
-            .then(response => response?.data?.data?.result),
-        {
-            // enabled: currentPage === 1, // Disable query fetching after the first page
-            // Pass query-specific configurations if needed
-            // onSuccess: () => {
-            //     // Invalidate the query to refetch data from the server when images are uploaded successfully
-            //     queryClient.invalidateQueries('images');
-            // }
-        }
-    );
+    axios.get(`${GET_UPLOAD_IMAGES}?pageSize=${page.pageSize}&page=${currentPage}`, {
+        withCredentials: true // Add withCredentials: true here
+    })
+    .then(response => response?.data?.data?.result),
+    {
+        // enabled: currentPage === 1, // Disable query fetching after the first page
+        // Pass query-specific configurations if needed
+        // onSuccess: () => {
+        //     // Invalidate the query to refetch data from the server when images are uploaded successfully
+        //     queryClient.invalidateQueries('images');
+        // }
+    }
+);
 
     const handleOnChange = (_files) => {
         setFileObjects(_files)
